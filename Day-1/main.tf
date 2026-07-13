@@ -1,22 +1,18 @@
 # Day 1 starter: no cloud account or credentials required.
-# We generate a random pet name and write a greeting file locally.
+# We generate " Hello Terraform " write a greeting file locally.
 
-resource "random_pet" "name" {
-  length    = 2
-  separator = "-"
+terraform {
+  required_providers {
+    local = {
+      source = "hashicorp/local"
+      version = "~>2.5"
+    }
+  }
 }
 
-resource "local_file" "greeting" {
-  filename = "${path.module}/greeting.txt"
-  content  = "Hello from TerraWeek 2026! 🚀\nYour infra pet name is: ${random_pet.name.id}\n"
-}
+provider "local" {}
 
-output "pet_name" {
-  description = "The randomly generated pet name."
-  value       = random_pet.name.id
-}
-
-output "file_path" {
-  description = "Where the greeting file was written."
-  value       = local_file.greeting.filename
+resource "local_file" "hello" {
+  filename = "hello.txt"
+  content  = "Hello Terraform!"
 }
