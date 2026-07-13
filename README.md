@@ -1,10 +1,6 @@
 # TerraWeek-Challenge-
  TerraWeek Challenge! Today is all about foundations!!!!!
-
-#  Date: Sunday, 12th July 2026
-
-Welcome to Day 1 of the TerraWeek Challenge! Today is all about foundations — understanding why Infrastructure as Code exists, installing the latest Terraform (v1.15.x), and running your very first terraform apply. 🚀
-
+ 
 🎯 Learning Goals
 
 # 🌍 TerraWeek Challenge – Terraform Journey
