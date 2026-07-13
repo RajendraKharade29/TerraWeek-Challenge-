@@ -77,6 +77,16 @@ The goal of this challenge is to build strong Terraform skills through consisten
 - Install **Terraform ≥ 1.15** using the [official install guide](https://developer.hashicorp.com/terraform/install).
 - Verify your install and **paste the output** in your notes:
 
+
+```bash
+sudo apt update
+wget https://releases.hashicorp.com/terraform/1.13.0/terraform_1.13.0_linux_amd64.zip
+sudo apt install unzip -y
+unzip terraform_1.13.0_linux_amd64.zip
+sudo mv terraform /usr/local/bin/
+terraform -version
+```
+
 ```bash
 terraform version
 terraform -help
