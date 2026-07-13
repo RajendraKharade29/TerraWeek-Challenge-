@@ -1,6 +1,6 @@
 
 variable "region" {
-  default = "ap-south-1"
+  default = "us-west-2"
 }
 
 variable "bucket_name" {
