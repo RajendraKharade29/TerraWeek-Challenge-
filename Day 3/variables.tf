@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS Region"
   type        = string
-  default     = "us-east-2"
+  default     = "us-west-2"
 }
 
 variable "instance_type" {
@@ -31,7 +31,7 @@ variable "public_subnet_cidr" {
 variable "availability_zone" {
   description = "Availability Zone"
   type        = string
-  default     = "us-east-2"
+  default     = "us-west-2a"
 }
 
 variable "common_tags" {
