@@ -17,18 +17,22 @@ Understand Lifecycle Management
 Validate and plan Terraform configurations
 
 ## 📂 Project Structure
----
-.
-├── provider.tf
-├── main.tf
-├── variables.tf
-├── outputs.tf
-└── README.md
-🛠️ Resources Covered
-AWS Provider
-AWS EC2 Instance
-AWS S3 Bucket
-AWS Security Group
+
+```text
+provider.tf
+main.tf
+variables.tf
+outputs.tf
+README.md
+```
+## 🛠️ Resources Covered
+**AWS Provider**
+
+**AWS EC2 Instance**
+
+**AWS S3 Bucket**
+
+**AWS Security Group**
 
 ---
 
@@ -85,10 +89,12 @@ Preview execution plan:
 
 terraform plan
 ```
-Create infrastructure:
+## Create infrastructure:
 
+```bash
 terraform apply
-
-Destroy infrastructure:
-
+```
+## Destroy infrastructure:
+```bash
 terraform destroy
+```
