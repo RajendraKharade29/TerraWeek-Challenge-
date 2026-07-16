@@ -29,18 +29,6 @@ This repository documents my hands-on learning journey with **Terraform** and **
 - Git & GitHub
 - Linux
 
-## 🎯 Goal
-The goal of this challenge is to build strong Terraform skills through consistent hands-on practice and real-world infrastructure deployment.
-
-## 📂 Repository Structure
-
-Day-01/
-Day-02/
-Day-03/
-...
-terraform/
-
-
 
 
 
