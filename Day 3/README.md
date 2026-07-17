@@ -19,7 +19,7 @@ Validate and plan Terraform configurations
 ## 📂 Project Structure
 
 ```text
-provider.tf
+terraform.tf
 main.tf
 variables.tf
 outputs.tf
