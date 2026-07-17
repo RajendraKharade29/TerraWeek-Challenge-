@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.10"
 
   required_providers {
     aws = {
@@ -14,10 +14,9 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project     = "TerraWeek-Day3"
-      Environment = "Dev"
-      ManagedBy   = "Terraform"
-      Owner       = "Rajendra Kharade"
+      Project   = "terraweek-2026"
+      ManagedBy = "terraform"
+      Day       = "03"
     }
   }
 }
