@@ -1,57 +1,57 @@
-# -----------------------------
-# Data Source - 
-# -----------------------------
-data "aws_ami" "amazon_linux" {
+# --- Data sources: read existing info, don't create anything ---
+
+# Latest Amazon Linux 2023 AMI in the chosen region.
+data "aws_ami" "al2023" {
   most_recent = true
   owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["al2023-ami-*-x86_64"]
+    values = ["al2023-ami-2023.*-x86_64"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
   }
 }
 
-# -----------------------------
-# VPC
-# -----------------------------
+# Available AZs in the region.
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+# --- Network ---
+
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
-  enable_dns_hostnames = true
   enable_dns_support   = true
+  enable_dns_hostnames = true
 
-  tags = merge(var.common_tags, {
-    Name = "TerraWeek-VPC"
-  })
+  tags = {
+    Name = "${var.name_prefix}-vpc"
+  }
 }
 
-# -----------------------------
-# Public Subnet
-# -----------------------------
-resource "aws_subnet" "public" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_subnet_cidr
-  availability_zone       = var.availability_zone
-  map_public_ip_on_launch = true
-
-  tags = merge(var.common_tags, {
-    Name = "Public-Subnet"
-  })
-}
-
-# -----------------------------
-# Internet Gateway
-# -----------------------------
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
-  tags = merge(var.common_tags, {
-    Name = "TerraWeek-IGW"
-  })
+  tags = {
+    Name = "${var.name_prefix}-igw"
+  }
 }
 
-# -----------------------------
-# Route Table
-# -----------------------------
+resource "aws_subnet" "public" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.public_subnet_cidr
+  availability_zone       = data.aws_availability_zones.available.names[0]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${var.name_prefix}-public-subnet"
+  }
+}
+
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -60,37 +60,25 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.igw.id
   }
 
-  tags = merge(var.common_tags, {
-    Name = "Public-Route-Table"
-  })
+  tags = {
+    Name = "${var.name_prefix}-public-rt"
+  }
 }
 
-# -----------------------------
-# Route Table Association
-# -----------------------------
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
 
-# -----------------------------
-# Security Group
-# -----------------------------
-resource "aws_security_group" "web_sg" {
-  name        = "web-security-group"
-  description = "Allow SSH and HTTP"
+# --- Security group ---
+
+resource "aws_security_group" "web" {
+  name        = "${var.name_prefix}-web-sg"
+  description = "Allow HTTP inbound and all outbound"
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "HTTP"
+    description = "HTTP from anywhere"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -98,36 +86,41 @@ resource "aws_security_group" "web_sg" {
   }
 
   egress {
+    description = "All outbound"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(var.common_tags, {
-    Name = "Web-SG"
-  })
+  tags = {
+    Name = "${var.name_prefix}-web-sg"
+  }
 }
 
-# -----------------------------
-# EC2 Instance
-# -----------------------------
+# --- Compute: EC2 that installs Nginx on boot ---
+# We use `user_data` (a boot script) instead of SSH-based provisioners.
+# That's the modern, reliable pattern: no key pair or SSH ingress needed, and
+# it works even when the instance is replaced. (More on provisioners on Day 6.)
+
 resource "aws_instance" "web" {
-  ami                         = data.aws_ami.amazon_linux.id
-  instance_type               = var.instance_type
-  subnet_id                   = aws_subnet.public.id
-  vpc_security_group_ids      = [aws_security_group.web_sg.id]
-  associate_public_ip_address = true
+  ami                    = data.aws_ami.al2023.id
+  instance_type          = var.instance_type
+  subnet_id              = aws_subnet.public.id
+  vpc_security_group_ids = [aws_security_group.web.id]
 
-  tags = merge(var.common_tags, {
-    Name = var.instance_name
-  })
-
-  depends_on = [
-    aws_internet_gateway.igw
-  ]
+  user_data = <<-EOF
+    #!/bin/bash
+    dnf install -y nginx
+    echo "<h1>Hello from TerraWeek 2026 🚀</h1>" > /usr/share/nginx/html/index.html
+    systemctl enable --now nginx
+  EOF
 
   lifecycle {
     create_before_destroy = true
+  }
+
+  tags = {
+    Name = "${var.name_prefix}-web"
   }
 }
