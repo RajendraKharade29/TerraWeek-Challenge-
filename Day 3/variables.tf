@@ -1,46 +1,29 @@
 variable "aws_region" {
-  description = "AWS Region"
+  description = "AWS region to deploy into."
   type        = string
   default     = "us-west-2"
 }
 
-variable "instance_type" {
-  description = "EC2 Instance Type"
-  type        = string
-  default     = "t2.micro"
-}
-
-variable "instance_name" {
-  description = "EC2 Instance Name"
-  type        = string
-  default     = "TerraWeek-EC2"
-}
-
 variable "vpc_cidr" {
-  description = "VPC CIDR Block"
+  description = "CIDR block for the VPC."
   type        = string
   default     = "10.0.0.0/16"
 }
 
 variable "public_subnet_cidr" {
-  description = "Public Subnet CIDR"
+  description = "CIDR block for the public subnet."
   type        = string
   default     = "10.0.1.0/24"
 }
 
-variable "availability_zone" {
-  description = "Availability Zone"
+variable "instance_type" {
+  description = "EC2 instance type"
   type        = string
-  default     = "us-west-2a"
+  default     = "t3.micro"
 }
 
-variable "common_tags" {
-  description = "Common Tags"
-  type        = map(string)
-
-  default = {
-    Project     = "TerraWeek-Day3"
-    Environment = "Dev"
-    Owner       = "Rajendra Kharade"
-  }
+variable "name_prefix" {
+  description = "Prefix applied to resource names."
+  type        = string
+  default     = "terraweek"
 }
