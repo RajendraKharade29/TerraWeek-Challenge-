@@ -153,9 +153,4 @@ Include screenshots of:
 
 ---
 
-## 👨‍💻 Author
-
-**Rajendra Kharade**
-
-Learning DevOps | Terraform | AWS | Linux Administration
 
